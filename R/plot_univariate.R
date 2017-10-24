@@ -54,9 +54,14 @@ setMethod(
 setMethod(
   f = "plot_univariate"
   , "annotated_integer"
-  , definition = function(x, main = "", ...){
+  , definition = function(x, main = "", ylab = "Häufigkeit", freq = TRUE, ...){
 
-    frequencies <- table(x)
+    if(freq==TRUE){
+      frequencies <- table(x, useNA = "ifany")
+    } else {
+      tmp_ <- table(x, useNA = "ifany")
+      frequencies <- tmp_/sum(tmp_)
+    }
     x_values <- min(x):max(x)
     height <- rep(0, length(x_values))
     names(height) <- x_values
@@ -67,7 +72,7 @@ setMethod(
 
     plot.new()
     plot.window(xlim = xlim, ylim = ylim)
-    title(xlab = variable_label(x), ylab = "Häufigkeit", main = main)
+    title(xlab = variable_label(x), ylab = ylab, main = main)
     rect(xleft = x_values-.4, xright = x_values+.4, ybottom = rep(0, length(x_values)), ytop = height, col = getOption("shinydegs.theme")$col, border = getOption("shinydegs.theme")$border)
     axis(side = 1, at = c(min(x)-.5, x_values+.5), labels = rep("", length(x_values)+1), pos = 0)
     axis(side = 1, at = x_values, labels = x_values, pos = 0, tick = FALSE)
@@ -81,9 +86,14 @@ setMethod(
 setMethod(
   f = "plot_univariate"
   , "annotated_factor"
-  , definition = function(x, main = "", ...){
+  , definition = function(x, main = "", ylab = "Häufigkeit", freq = TRUE, ...){
 
-    frequencies <- table(x)
+    if(freq==TRUE){
+      frequencies <- table(x, useNA = "ifany")
+    } else {
+      tmp_ <- table(x, useNA = "ifany")
+      frequencies <- tmp_/sum(tmp_)
+    }
     x_values <- 1:length(x@levels)
     names(x_values) <- x@levels
 
@@ -96,7 +106,7 @@ setMethod(
 
     plot.new()
     plot.window(xlim = xlim, ylim = ylim)
-    title(xlab = variable_label(x), ylab = "Häufigkeit", main = main)
+    title(xlab = variable_label(x), ylab = ylab, main = main)
     rect(xleft = x_values-.4, xright = x_values+.4, ybottom = rep(0, length(x_values)), ytop = height, col = getOption("shinydegs.theme")$col, border = getOption("shinydegs.theme")$border)
     axis(side = 1, at = c(-.5, x_values+.5), labels = rep("", length(x_values)+1), pos = 0)
     axis(side = 1, at = x_values, labels = names(x_values), pos = 0, tick = FALSE)
@@ -110,9 +120,14 @@ setMethod(
 setMethod(
   f = "plot_univariate"
   , "annotated_logical"
-  , definition = function(x, main = "", ...){
+  , definition = function(x, main = "", ylab = "Häufigkeit", freq = TRUE, ...){
 
-    frequencies <- table(x, useNA = "ifany")
+    if(freq==TRUE){
+      frequencies <- table(x, useNA = "ifany")
+    } else {
+      tmp_ <- table(x, useNA = "ifany")
+      frequencies <- tmp_/sum(tmp_)
+    }
 
 
     height <- rep(0, length(x_values))
@@ -124,7 +139,7 @@ setMethod(
 
     plot.new()
     plot.window(xlim = xlim, ylim = ylim)
-    title(xlab = variable_label(x), ylab = "Häufigkeit", main = main)
+    title(xlab = variable_label(x), ylab = ylab, main = main)
     rect(xleft = x_values-.4, xright = x_values+.4, ybottom = rep(0, length(x_values)), ytop = height, col = getOption("shinydegs.theme")$col, border = getOption("shinydegs.theme")$border)
     axis(side = 1, at = c(-.5, x_values+.5), labels = rep("", length(x_values)+1), pos = 0)
     axis(side = 1, at = x_values, labels = names(x_values), pos = 0, tick = FALSE)
