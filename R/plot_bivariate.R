@@ -48,12 +48,11 @@ setGeneric(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_numeric", y = "annotated_numeric")
-  , definition = function(x, y, xlim = NULL, ylim = NULL, ...){
+  , definition = function(x, y, xlim = NULL, ylim = NULL, model = TRUE, ...){
     data <- data.frame(x, y)
     data <- data[complete.cases(data), ]
     N <- nrow(data)
 
-    model <- lm(formula = y ~ x, data = data)
     if(is.null(xlim)) xlim <- range(x)
     if(is.null(ylim)) ylim <- range(y)
 
@@ -71,8 +70,11 @@ setMethod(
       , xlim = xlim
       , ylim = ylim
     )
-    abline(model, lwd = 2, col = "skyblue4")
-    return(model)
+    if(model){
+      model_object <- lm(formula = y ~ x, data = data)
+      abline(model_object, lwd = 2, col = "skyblue4")
+      invisible(model_object)
+    }
   }
 )
 
@@ -82,7 +84,7 @@ setMethod(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_numeric", y = "annotated_factor")
-  , definition = function(x, y, ...){
+  , definition = function(x, y, model = TRUE, ...){
 
     response <- rep(0, length(y))
     response[y!=levels(y)[1]] <- 1
@@ -103,18 +105,20 @@ setMethod(
     )
 
     # run a logistic regression model
-    model <- glm(formula = y ~ x, data = data, family = binomial(link = "probit"))
+    if(model){
+      model_object <- glm(formula = y ~ x, data = data, family = binomial(link = "probit"))
 
-    curve(expr = predict.glm(
-      object = model
-      , data.frame(x = x)
-      , type = "response"
-    )
-    , add = TRUE
-    , lwd = 2
-    , col = "skyblue4"
-    )
-    return(model)
+      curve(expr = predict.glm(
+        object = model_object
+        , data.frame(x = x)
+        , type = "response"
+      )
+      , add = TRUE
+      , lwd = 2
+      , col = "skyblue4"
+      )
+      invisible(model_object)
+    }
   }
 )
 
@@ -124,9 +128,9 @@ setMethod(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_numeric", y = "annotated_integer")
-  , definition = function(x, y, ...){
+  , definition = function(x, y, model = TRUE, ...){
     # just return the opposite arrangement, this is too stupid
-    plot_bivariate(x = y, y = x)
+    plot_bivariate(x = y, y = x, model = model, ...)
   }
 )
 
@@ -140,7 +144,7 @@ setMethod(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_integer", y = "annotated_numeric")
-  , definition = function(x, y, ...){
+  , definition = function(x, y, model = TRUE, ...){
     data <- data.frame(pred = as(x, "annotated_factor"), dv = y)
     data <- data[complete.cases(data), ]
 
@@ -153,8 +157,10 @@ setMethod(
       , args_rect = list(col = "#75AADB", border = "white")
       , las = 1
     )
-    model <- aov_ez(data = data, id = "id", dv = "dv", between = "pred", return = "Anova")
-    return(model)
+    if(model){
+      model_object <- aov_ez(data = data, id = "id", dv = "dv", between = "pred", return = "Anova")
+      invisible(model_object)
+    }
   }
 )
 
@@ -164,15 +170,17 @@ setMethod(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_integer", y = "annotated_integer")
-  , definition = function(x, y, ...){
+  , definition = function(x, y, model = TRUE, ...){
     x <- droplevels(as(x, "annotated_factor"))
     par(mfrow = c(nlevels(x), 1))
     for (i in levels(x)){
       plot_univariate(x = y[x==i], main = i)
     }
-    model <- chisq.test(x = table(x, y))
 
-    return(model)
+    if(model){
+      model_object <- chisq.test(x = table(x, y))
+      invisible(model_object)
+    }
   }
 )
 
@@ -196,14 +204,16 @@ setMethod(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_factor", y = "annotated_factor")
-  , definition = function(x, y, ...){
+  , definition = function(x, y, model = TRUE, ...){
     x <- droplevels(as(x, "annotated_factor"))
     par(mfrow = c(nlevels(x), 1))
     for (i in levels(x)){
       plot_univariate(x = y[x==i], main = i)
     }
-    model <- chisq.test(x = table(x, y))
-    return(model)
+    if(model){
+      model_object <- chisq.test(x = table(x, y))
+      invisible(model_object)
+    }
   }
 )
 
@@ -213,7 +223,7 @@ setMethod(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_factor", y = "annotated_numeric")
-  , definition = function(x, y, ...){
+  , definition = function(x, y, model = TRUE, ...){
     data <- data.frame(pred = x, dv = y)
     data <- data[complete.cases(data), ]
     data$id <- 1:nrow(data)
@@ -225,8 +235,11 @@ setMethod(
       , args_rect = list(col = "#75AADB", border = "white")
       , las = 1
     )
-    model <- afex::aov_ez(data = data, id = "id", dv = "dv", between = "pred", na.rm = TRUE, return = "Anova")
-    return(model)
+
+    if(model){
+      model_object <- afex::aov_ez(data = data, id = "id", dv = "dv", between = "pred", na.rm = TRUE, return = "Anova")
+      invisible(model_object)
+    }
   }
 )
 
@@ -236,13 +249,16 @@ setMethod(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_factor", y = "annotated_integer")
-  , definition = function(x, y, ...){
+  , definition = function(x, y, model = TRUE, ...){
     x <- droplevels(x)
     par(mfrow = c(nlevels(x), 1))
     for (i in levels(x)){
       plot_univariate(x = y[x==i], main = i)
     }
-    model <- chisq.test(x = table(x, y))
-    return(model)
+
+    if(model) {
+      model_object <- chisq.test(x = table(x, y))
+      invisible(model_object)
+    }
   }
 )
