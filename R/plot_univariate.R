@@ -89,9 +89,9 @@ setMethod(
   , definition = function(x, main = "", ylab = "Häufigkeit", freq = TRUE, ...){
 
     if(freq==TRUE){
-      frequencies <- table(x, useNA = "ifany")
+      frequencies <- table(x)
     } else {
-      tmp_ <- table(x, useNA = "ifany")
+      tmp_ <- table(x)
       frequencies <- tmp_/sum(tmp_)
     }
     x_values <- 1:length(x@levels)

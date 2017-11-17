@@ -178,7 +178,7 @@ setMethod(
     }
 
     if(model){
-      model_object <- chisq.test(x = table(x, y))
+      model_object <- glm.fit(x = x, y = y, family = binomial(link = "logit"))
       invisible(model_object)
     }
   }
