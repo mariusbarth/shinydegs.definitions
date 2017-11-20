@@ -53,8 +53,8 @@ setMethod(
     data <- data[complete.cases(data), ]
     N <- nrow(data)
 
-    if(is.null(xlim)) xlim <- range(x)
-    if(is.null(ylim)) ylim <- range(y)
+    if(is.null(xlim)) xlim <- range(x, na.rm = TRUE)
+    if(is.null(ylim)) ylim <- range(y, na.rm = TRUE)
 
     plot(
       x = x

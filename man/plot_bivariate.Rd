@@ -17,23 +17,30 @@
 plot_bivariate(x, y, ...)
 
 \S4method{plot_bivariate}{annotated_numeric,annotated_numeric}(x, y,
-  xlim = NULL, ylim = NULL, ...)
+  xlim = NULL, ylim = NULL, model = TRUE, ...)
 
-\S4method{plot_bivariate}{annotated_numeric,annotated_factor}(x, y, ...)
+\S4method{plot_bivariate}{annotated_numeric,annotated_factor}(x, y,
+  model = TRUE, ...)
 
-\S4method{plot_bivariate}{annotated_numeric,annotated_integer}(x, y, ...)
+\S4method{plot_bivariate}{annotated_numeric,annotated_integer}(x, y,
+  model = TRUE, ...)
 
-\S4method{plot_bivariate}{annotated_integer,annotated_numeric}(x, y, ...)
+\S4method{plot_bivariate}{annotated_integer,annotated_numeric}(x, y,
+  model = TRUE, ...)
 
-\S4method{plot_bivariate}{annotated_integer,annotated_integer}(x, y, ...)
+\S4method{plot_bivariate}{annotated_integer,annotated_integer}(x, y,
+  model = TRUE, ...)
 
 \S4method{plot_bivariate}{annotated_integer,annotated_factor}(x, y, ...)
 
-\S4method{plot_bivariate}{annotated_factor,annotated_factor}(x, y, ...)
+\S4method{plot_bivariate}{annotated_factor,annotated_factor}(x, y,
+  model = TRUE, ...)
 
-\S4method{plot_bivariate}{annotated_factor,annotated_numeric}(x, y, ...)
+\S4method{plot_bivariate}{annotated_factor,annotated_numeric}(x, y,
+  model = TRUE, ...)
 
-\S4method{plot_bivariate}{annotated_factor,annotated_integer}(x, y, ...)
+\S4method{plot_bivariate}{annotated_factor,annotated_integer}(x, y,
+  model = TRUE, ...)
 }
 \description{
 Convenience function for plotting univariate data. Method dispatch ensures

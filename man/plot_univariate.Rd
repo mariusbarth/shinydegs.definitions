@@ -13,11 +13,14 @@ plot_univariate(x, ...)
 
 \S4method{plot_univariate}{annotated_numeric}(x, ...)
 
-\S4method{plot_univariate}{annotated_integer}(x, main = "", ...)
+\S4method{plot_univariate}{annotated_integer}(x, main = "",
+  ylab = "Häufigkeit", freq = TRUE, ...)
 
-\S4method{plot_univariate}{annotated_factor}(x, main = "", ...)
+\S4method{plot_univariate}{annotated_factor}(x, main = "",
+  ylab = "Häufigkeit", freq = TRUE, ...)
 
-\S4method{plot_univariate}{annotated_logical}(x, main = "", ...)
+\S4method{plot_univariate}{annotated_logical}(x, main = "",
+  ylab = "Häufigkeit", freq = TRUE, ...)
 }
 \description{
 Convenience function for plotting univariate data. Method dispatch ensures
