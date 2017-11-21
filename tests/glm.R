@@ -22,5 +22,5 @@ plotCurves(m1, plotx = "x2")
 plot(residuals(m1))
 
 
-plot(x = m1$x[, ], y = m1$y)
+plot(x = m1$x[, "x1"], y = m1$y)
 
