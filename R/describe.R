@@ -39,13 +39,13 @@ setMethod(
   f = "describe"
   , signature = "annotated_factor"
   , definition = function(x, ...){
-    
+    x <- droplevels(x)
     x_tab <- table(x)
     x_prop <- x_tab/sum(x_tab)
     k <- as.integer(nlevels(x))
     
     list(
-      "Modus" = names(x_tab[x_tab==max(x_tab)])
+      "Modus" = paste(names(x_tab[x_tab==max(x_tab)]), collapse = ", ")
       , "Anzahl Kategorien" = k
       , "Relativer Informationsgehalt" = -1/log(k) * sum(x_prop * log(x_prop))
     )
@@ -56,7 +56,7 @@ setMethod(
 
 setGeneric(
   name = "descriptives_table"
-  , def = function(x, by = list(), ...){
+  , def = function(x, by, ...){
     standardGeneric("descriptives_table")
   }
 )
@@ -66,11 +66,22 @@ setGeneric(
 
 setMethod(
   f = "descriptives_table"
-  , signature = c("annotated_vector", "missing")
-  , definition = function(x, by, ...){
+  , signature = c(x = "annotated_vector", by = "missing")
+  , definition = function(x, by, ...) {
     
-    as.data.frame(lapply(X = describe(x), papaja::printnum))
-    
+    as.data.frame(
+      lapply(
+        X = describe(x)
+        , FUN = function(x) {
+          if(is.numeric(x)){
+            papaja::printnum(x)
+          } else{
+        x
+      }
+    }
+  )
+  , stringsAsFactors = FALSE
+  , check.names = FALSE)
   }
 )
 
@@ -78,20 +89,15 @@ setMethod(
  
 setMethod(
   f = "descriptives_table"
-  , signature = c("annotated_vector", "list")
+  , signature = c(x = "annotated_vector", by = "list")
   , definition = function(x, by, ...){
     
-    # y <- tapply(X = x, INDEX = by, FUN = function(x){unlist(lapply(X = describe(x), papaja::printnum))}, simplify = FALSE)
-    # z <- do.call("rbind", y)
-    y <- aggregate(x = x, by = by, FUN = describe)
-    # tmp <- as.data.frame(y$x)
-    # tmp <- lapply(tmp, unlist)
-    # # tmp <- lapply(tmp, papaja::printnum)
-    # # tmp <- lapply(X = tmp, FUN = function(x){lapply(X = x, papaja::printnum)})
-    # y$x <- NULL
-    # colnames(y) <- names(by)
-    # cbind(y, tmp)
-    y
+    y <- aggregate(x = x, by = by, FUN = descriptives_table)
+    tmp <- as.data.frame(y$x, check.names = FALSE)
+
+    y$x <- NULL
+    colnames(y) <- unlist(lapply(by, variable_label))
+    cbind(y, tmp)
   }
 )
 
