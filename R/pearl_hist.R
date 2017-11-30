@@ -15,7 +15,7 @@ setGeneric(
 setMethod(
   f = "pearl_hist"
   , signature = c(x = "numeric")
-  , definition = function(x, breaks, highlight = FALSE, pch = 21, ...){
+  , definition = function(x, breaks, highlight = FALSE, pch = 21, ci = NULL, true_x = FALSE, ...){
     # clean `x` for some robustness:
     x <- x[!is.na(x)]
 
@@ -29,7 +29,9 @@ setMethod(
     col <- getOption("shinydegs.theme")$col
     border <- getOption("shinydegs.theme")$border
 
-    x <- test$mids
+    if(!true_x){
+      x <- test$mids
+    }
     y <- test$counts
 
     if(length(x)>0){
@@ -41,6 +43,19 @@ setMethod(
 
       if(highlight){
         bigger <- last_x > test$breaks
+        
+        if(!is.null(ci)){
+          arrows(
+            x0 = x[sum(bigger)]
+            , x1 = x[sum(bigger)] + c(ci, -ci)
+            , y0 = y[sum(bigger)]-.5
+            , y1 = y[sum(bigger)]-.5
+            , length = .05
+            , angle = 90
+            , lwd = 2
+            , col = "indianred3"
+          )
+        }
         points(x = x[sum(bigger)], y = y[sum(bigger)]-.5, pch = pch, bg = "indianred3", col = border, cex = 3)
       }
     }
