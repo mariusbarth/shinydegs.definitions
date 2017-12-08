@@ -13,14 +13,17 @@ generalized_linear_model <- function(data, dv, iv, standardize = FALSE){
 
   formula <- formula(paste0(dv, " ~ ", paste(iv, collapse = "+ ")))
 
+  if(is.null(standardize)) standardize <- FALSE
 
   if(inherits(data[[dv]], "integer")){
-    data[[dv]] <- as.numeric(data[[dv]])
+    data[[dv]] <- as(data[[dv]], "annotated_numeric")
   }
 
   if(inherits(x = data[[dv]], what = "numeric")){
     if(standardize){
-      data[, c(dv, iv)] <- scale(data[, c(dv, iv)])
+      numeric_variables <- unlist(lapply(data[, c(dv, iv)], is, "annotated_numeric"))
+      
+      data[, c(dv, iv)][, numeric_variables] <- scale(data[, c(dv, iv)][, numeric_variables])
     }
     lm(formula = formula, data = data, model = TRUE, x = TRUE, y = TRUE, qr = TRUE)
   } else {
