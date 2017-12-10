@@ -10,16 +10,20 @@
 #' @export
 
 generalized_linear_model <- function(data, dv, iv, standardize = FALSE){
+  
+  data <- data[, c(iv, dv)]
+  data <- data[complete.cases(data), ]
+  
 
   formula <- formula(paste0(dv, " ~ ", paste(iv, collapse = "+ ")))
 
   if(is.null(standardize)) standardize <- FALSE
 
-  if(inherits(data[[dv]], "integer")){
+  if(is(data[[dv]], "annotated_integer")){
     data[[dv]] <- as(data[[dv]], "annotated_numeric")
   }
 
-  if(inherits(x = data[[dv]], what = "numeric")){
+  if(is(data[[dv]], "annotated_numeric")){
     if(standardize){
       numeric_variables <- unlist(lapply(data[, c(dv, iv)], is, "annotated_numeric"))
       
@@ -27,7 +31,13 @@ generalized_linear_model <- function(data, dv, iv, standardize = FALSE){
     }
     lm(formula = formula, data = data, model = TRUE, x = TRUE, y = TRUE, qr = TRUE)
   } else {
-    if(inherits(x = data[[dv]], what = "factor")){
+    if(is(data[[dv]], "annotated_factor")){
+      
+      response <- rep(0, length(data[[dv]]))
+      response[data[[dv]]!=levels(data[[dv]])[1]] <- 1
+      
+      data[[dv]] <- as.factor(response)
+      
       glm(formula = formula, data = data, family = binomial(link = "logit"))
     }
   }
