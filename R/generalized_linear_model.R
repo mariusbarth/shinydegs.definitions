@@ -11,6 +11,7 @@
 
 generalized_linear_model <- function(data, dv, iv, standardize = FALSE){
   
+  # cleanup and NA handling
   data <- data[, c(iv, dv)]
   data <- data[complete.cases(data), ]
   
@@ -21,6 +22,12 @@ generalized_linear_model <- function(data, dv, iv, standardize = FALSE){
 
   if(is(data[[dv]], "annotated_integer")){
     data[[dv]] <- as(data[[dv]], "annotated_numeric")
+  }
+  
+  for(i in iv){
+    if(is(data[[i]], "annotated_factor")){
+      data[[i]] <- as(data[[i]], "factor")
+    }
   }
 
   if(is(data[[dv]], "annotated_numeric")){
