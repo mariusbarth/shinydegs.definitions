@@ -40,6 +40,14 @@ generalized_linear_model <- function(data, dv, iv, standardize = FALSE){
   } else {
     if(is(data[[dv]], "annotated_factor")){
       
+      if(standardize){
+        numeric_variables <- unlist(lapply(data, is, "annotated_numeric"))
+        
+        if(any(numeric_variables)) {
+          data[, numeric_variables] <- scale(data[, numeric_variables, drop = FALSE])
+        }
+      }
+      
       response <- rep(0, length(data[[dv]]))
       response[data[[dv]]!=levels(data[[dv]])[1]] <- 1
       
