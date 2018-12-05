@@ -236,7 +236,7 @@ setMethod(
       , las = 1
       , xlab = annotate4::variable_label(x)
       , ylab = annotate4::variable_label(y)
-      , xlim = xlim
+      # , xlim = xlim # don't let user  specify
       , ylim = ylim
     )
 
