@@ -49,7 +49,7 @@ setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_numeric", y = "annotated_numeric")
   , definition = function(x, y, xlim = NULL, ylim = NULL, model = TRUE, ...){
-    data <- data.frame(x, y)
+    data <- data.frame(as.numeric(x), as.numeric(y))
     data <- data[complete.cases(data), ]
     N <- nrow(data)
 
@@ -59,8 +59,8 @@ setMethod(
     plot(
       x = x
       , y = y
-      , xlab = variable_label(x)
-      , ylab = variable_label(y)
+      , xlab = annotate4::variable_label(x)
+      , ylab = annotate4::variable_label(y)
       , pch = 21
       , col = getOption("shinydegs.theme")$border
       , cex = (1/(1+exp(1/200*(N-500))))+.5
@@ -89,14 +89,14 @@ setMethod(
     response <- rep(0, length(y))
     response[y!=levels(y)[1]] <- 1
 
-    data <- data.frame(x, y = response)
+    data <- data.frame(as.numeric(x), y = response)
     data <- data[complete.cases(data), ]
 
     plot(
       x = data$x
       , y = data$y
-      , xlab = variable_label(x)
-      , ylab = latex2exp::TeX(paste0("$\\mathit{P}(", variable_label(y), "=", levels(y)[2], ")$"))
+      , xlab = annotate4::variable_label(x)
+      , ylab = latex2exp::TeX(paste0("$\\mathit{P}(", annotate4::variable_label(y), "=", levels(y)[2], ")$"))
       , frame.plot = FALSE
       , las = 1
       , pch = 21
@@ -145,7 +145,7 @@ setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_integer", y = "annotated_numeric")
   , definition = function(x, y, model = TRUE, ...){
-    data <- data.frame(pred = as(x, "annotated_factor"), dv = y)
+    data <- data.frame(pred = annotate4::as.factor(x), dv = as.numeric(y))
     data <- data[complete.cases(data), ]
 
     data$id <- 1:nrow(data)
@@ -223,8 +223,8 @@ setMethod(
 setMethod(
   f = "plot_bivariate"
   , signature = c(x = "annotated_factor", y = "annotated_numeric")
-  , definition = function(x, y, model = TRUE, ...){
-    data <- data.frame(pred = x, dv = y)
+  , definition = function(x, y, xlim = NULL, ylim = NULL, model = TRUE, ...){
+    data <- data.frame(pred = annotate4::as.factor(x), dv = as.numeric(y))
     data <- data[complete.cases(data), ]
     data$id <- 1:nrow(data)
     papaja::apa_barplot(
@@ -234,6 +234,10 @@ setMethod(
       , factors = "pred"
       , args_rect = list(col = "#75AADB", border = "white")
       , las = 1
+      , xlab = annotate4::variable_label(x)
+      , ylab = annotate4::variable_label(y)
+      , xlim = xlim
+      , ylim = ylim
     )
 
     if(model){
