@@ -13,13 +13,16 @@ setMethod(
   f = "describe"
   , signature = "annotated_numeric"
   , definition = function(x, na.rm = TRUE, ...){
+  
     y <- list(
       "Anzahl Beobachtungen" = sum(!is.na(x))
       , "Mittelwert" = mean(x, na.rm = na.rm)
+      , "Standardfehler" = sd(x, na.rm = na.rm) / sum(!is.na(x))
       , "Standardabweichung" = sd(x, na.rm = na.rm)
     )
     attr(y$`Anzahl Beobachtungen`, "digits") <- 0
     attr(y$`Mittelwert`, "digits") <- 2
+    attr(y$`Standardfehler`, "digits") <- 2
     attr(y$`Standardabweichung`, "digits") <- 2
     y
   }
