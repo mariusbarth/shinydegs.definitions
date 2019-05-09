@@ -17,7 +17,7 @@ setMethod(
     y <- list(
       "Anzahl Beobachtungen" = sum(!is.na(x))
       , "Mittelwert" = mean(x, na.rm = na.rm)
-      , "Standardfehler" = sd(x, na.rm = na.rm) / sum(!is.na(x))
+      , "Standardfehler" = sd(x, na.rm = na.rm) / sqrt(sum(!is.na(x)))
       , "Standardabweichung" = sd(x, na.rm = na.rm)
     )
     attr(y$`Anzahl Beobachtungen`, "digits") <- 0
